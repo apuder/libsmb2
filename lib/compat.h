@@ -618,6 +618,10 @@ struct sockaddr_storage {
 #include <stdint.h>
 #endif
 
+#ifdef __APPLE__
+#include <stdint.h>
+#endif
+
 #ifdef __vita__
 
 #include <netinet/in.h>
