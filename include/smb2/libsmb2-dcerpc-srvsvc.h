@@ -156,6 +156,18 @@ struct srvsvc_rep {
  */
 int smb2_share_enum_async(struct smb2_context *smb2, enum SHARE_INFO_enum level,
                           smb2_command_cb cb, void *cb_data);
+/*
+ * Sync share_enum()
+ * This function only works when connected to the IPC$ share.
+ *
+ * Returns
+ * NULL: Failure
+ * !NULL: Success. The returned pointer is struct srvsvc_NetrShareEnum_rep *
+ *        This pointer must be freed using smb2_free_data().
+ */
+struct srvsvc_NetrShareEnum_rep *
+smb2_share_enum_sync(struct smb2_context *smb2, enum SHARE_INFO_enum level);
+
 
 int srvsvc_NetrShareEnum_rep_coder(struct dcerpc_context *dce,
                                    struct dcerpc_pdu *pdu,

@@ -932,3 +932,57 @@ struct smb2_file_notify_change_information *smb2_notify_change(struct smb2_conte
         free(cb_data);
         return ptr;
 }
+
+static void sync_share_enum_cb(struct smb2_context *smb2, int status,
+                    void *command_data, void *private_data)
+{
+        struct sync_cb_data *cb_data = private_data;
+
+        if (cb_data->status == SMB2_STATUS_CANCELLED) {
+                free(cb_data);
+                return;
+        }
+
+        cb_data->is_finished = 1;
+        cb_data->status = status;
+        cb_data->ptr = command_data;
+}
+
+/*
+ * Send SRVSVC ShareEnum call to the server
+ */
+struct srvsvc_NetrShareEnum_rep *
+smb2_share_enum_sync(struct smb2_context *smb2, enum SHARE_INFO_enum level)
+{
+        struct srvsvc_NetrShareEnum_rep *rep = NULL;
+        struct sync_cb_data *cb_data;
+        int rc = 0;
+
+        if (!SMB2_VALID_SOCKET(smb2->fd)) {
+                smb2_set_error(smb2, "Not Connected to Server");
+                return NULL;
+        }
+
+        cb_data = calloc(1, sizeof(struct sync_cb_data));
+        if (cb_data == NULL) {
+                smb2_set_error(smb2, "Failed to allocate sync_cb_data");
+                return NULL;
+        }
+
+        rc = smb2_share_enum_async(smb2, level, sync_share_enum_cb, cb_data);
+        if (rc < 0) {
+                goto out;
+	}
+
+	rc = wait_for_reply(smb2, cb_data);
+        if (rc < 0) {
+                return NULL;
+	}
+
+        rep = cb_data->ptr;
+
+ out:
+        free(cb_data);
+
+	return rep;
+}

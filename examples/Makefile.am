@@ -11,6 +11,7 @@ noinst_PROGRAMS = smb2-cat-async smb2-cat-sync \
 	smb2-lsa-lookupsids \
 	smb2-lseek-sync \
 	smb2-share-enum \
+	smb2-share-enum-sync \
 	smb2-share-info \
 	smb2-stat-sync \
 	smb2-statvfs-sync \
@@ -41,6 +42,7 @@ smb2_readlink_LDADD = $(COMMON_LIBS)
 smb2_lsa_lookupsids_LDADD = $(COMMON_LIBS)
 smb2_lseek_sync_LDADD = $(COMMON_LIBS)
 smb2_share_enum_LDADD = $(COMMON_LIBS)
+smb2_share_enum_sync_LDADD = $(COMMON_LIBS)
 smb2_share_info_LDADD = $(COMMON_LIBS)
 smb2_stat_sync_LDADD = $(COMMON_LIBS)
 smb2_statvfs_sync_LDADD = $(COMMON_LIBS)
