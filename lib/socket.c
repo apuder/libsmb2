@@ -197,6 +197,7 @@ smb2_write_to_socket(struct smb2_context *smb2)
                 int i, niov = 1;
                 ssize_t count;
                 uint32_t spl = 0, tmp_spl, credit_charge = 0;
+                uint32_t spl_be;
 
                 for (tmp_pdu = pdu; tmp_pdu; tmp_pdu = tmp_pdu->next_compound) {
                         credit_charge += pdu->header.credit_charge;
@@ -228,8 +229,8 @@ smb2_write_to_socket(struct smb2_context *smb2)
                 }
 
                 /* Add the SPL vector as the first vector */
-                tmp_spl = htobe32(spl);
-                iov[0].iov_base = &tmp_spl;
+                spl_be = htobe32(spl);
+                iov[0].iov_base = &spl_be;
                 iov[0].iov_len = SMB2_SPL_SIZE;
 
                 tmpiov = iov;

@@ -22,6 +22,7 @@
 #ifdef ESP_PLATFORM
 #include <esp_system.h>
 #include <sys/types.h>
+#include <esp_random.h>
 #define random esp_random
 #endif
 
